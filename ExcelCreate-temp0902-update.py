@@ -168,6 +168,12 @@ def writeExcelRule(p1Dict):
         elif 'UPACP_' in id and '_A' in id:
             pass
         # ---------------------------upadate 20190829-----------------
+# -----------20190902update--------------------------------
+        elif 'FS_' in id and '_A' in id:
+            pass
+        elif 'FS_' in id and '_R' in id:
+            pass
+# -----------20190902update--------------------------------
         else:
             continue
         pattern = re.compile('(.*?)_')
@@ -288,8 +294,13 @@ def writeExcelAnalyse(col_content, col_event):
     QAT_Institution_warning = QAT_Institution_Event = QAT_Institution_object = 0
     QAT_Institution_list = []
 #----------------------------------update 20190829----------------------------------
+# ----------------------------------update 20190829 新增客结机构130----------------------------------
+    FS_Institution_warning = FS_Institution_Event = FS_Institution_object = 0
+    FS_Institution_list = []
 
-#test github 11
+# ----------------------------------update 20190829----------------------------------
+
+    #test github 11
     idPattern = re.compile(r'(\()(.*?)(\))')
     bracket = re.compile('(\()')
     index = 1
@@ -521,6 +532,18 @@ def writeExcelAnalyse(col_content, col_event):
                 UPACP_Institution_Event += 1
             UPACP_Institution_list.append(objId)
         # ----------------------------------update 20190829----------------------------------
+        # ----------------------------------update 20190829 新增客结机构130----------------------------------
+        elif 'FS_' in objId and '_A' in objId:
+            FS_Institution_warning += 1
+            if col_event[index] == '已开单':
+                FS_Institution_Event += 1
+            FS_Institution_list.append(objId)
+        elif 'FS_' in objId and '_R' in objId:
+            FS_Institution_warning += 1
+            if col_event[index] == '已开单':
+                FS_Institution_Event += 1
+            FS_Institution_list.append(objId)
+        # ----------------------------------update 20190829 新增客结机构130----------------------------------
 
         index += 1
 
@@ -607,6 +630,9 @@ def writeExcelAnalyse(col_content, col_event):
     QTT_Institution_object = len(set(QTT_Institution_list))
     QAT_Institution_object = len(set(QAT_Institution_list))
     # ----------------------------------update 20190829----------------------------------
+    # ----------------------------------update 20190902----------------------------------
+    FS_Institution_object = len(set(FS_Institution_list))
+    # ----------------------------------update 20190902----------------------------------
 
     # 写入excel特定位置
     fileModstr = str(input('输入模板excel名：'))
@@ -777,6 +803,11 @@ def writeExcelAnalyse(col_content, col_event):
     ws.cell(48, 7).value = QAT_Institution_warning
     ws.cell(48, 9).value = QAT_Institution_Event
     ws.cell(48, 10).value = QAT_Institution_object
+
+    # ----------------------------------update 20190902----------------------------------
+    ws.cell(30, 7).value = FS_Institution_warning
+    ws.cell(30, 9).value = FS_Institution_Event
+    ws.cell(30, 10).value = FS_Institution_object
     #-----------------------------------写入sheet2----------------------------------------
     ws1 = wb.worksheets[1]
     row = 2
@@ -1069,6 +1100,15 @@ def writeExcelAnalyse(col_content, col_event):
         ws1.cell(row,5).value= str(QAT_Institution_list.count(i))
         row += 1
     # ----------------------------------update 20190829----------------------------------
+    # ----------------------------------update 20190902----------------------------------
+    for i in set(FS_Institution_list):
+        ws1.cell(row,1).value= '客结'
+        ws1.cell(row,2).value= 'FS'
+        ws1.cell(row,3).value= '机构监控'
+        ws1.cell(row,4).value= i
+        ws1.cell(row,5).value= str(FS_Institution_list.count(i))
+        row += 1
+    # ----------------------------------update 20190902----------------------------------
 
     fileName = "告警分析" + nowTime + '.xlsx'
     wb.save(fileName)
