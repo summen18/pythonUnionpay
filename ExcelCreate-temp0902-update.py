@@ -169,6 +169,8 @@ def writeExcelRule(p1Dict):
             pass
         # ---------------------------upadate 20190829-----------------
 # -----------20190902update--------------------------------
+        elif 'FS_T_' in id and '_R' in id:
+            continue
         elif 'FS_' in id and '_A' in id:
             pass
         elif 'FS_' in id and '_R' in id:
@@ -533,6 +535,8 @@ def writeExcelAnalyse(col_content, col_event):
             UPACP_Institution_list.append(objId)
         # ----------------------------------update 20190829----------------------------------
         # ----------------------------------update 20190829 新增客结机构130----------------------------------
+        elif 'FS_T_' in objId and '_A' in objId:
+            continue
         elif 'FS_' in objId and '_A' in objId:
             FS_Institution_warning += 1
             if col_event[index] == '已开单':
