@@ -27,13 +27,10 @@ def extractData(col):
         errorList = []
         if "交易量下降" in p or "交易下降了" in p:
             errorList.append("fluctValue")
-            continue
         if "秒无交易上送" in p:
             errorList.append("noTransTm")
-            continue
         if "ERROR_CD" in p:
             errorList.append("httpCnt")
-            continue
         if "秒内成功率" in p:
             errorList.append("succRate")
         if "秒内失败笔数" in p:
