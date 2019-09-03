@@ -25,18 +25,21 @@ def extractData(col):
     count = 1
     for p in col[1:]:
         errorList = []
-        if "秒内成功率" in p:
-            errorList.append("succRate")
-        if "秒无交易上送" in p:
-            errorList.append("noTransTm")
         if "交易量下降" in p or "交易下降了" in p:
             errorList.append("fluctValue")
+            continue
+        if "秒无交易上送" in p:
+            errorList.append("noTransTm")
+            continue
+        if "ERROR_CD" in p:
+            errorList.append("httpCnt")
+            continue
+        if "秒内成功率" in p:
+            errorList.append("succRate")
         if "秒内失败笔数" in p:
             errorList.append("transFailNum")
         if "连续失败笔数" in p:
             errorList.append("seqFailNum")
-        if "ERROR_CD" in p:
-            errorList.append("httpCnt")
         try:
             objId = idPattern.search(p).group(2)
             while len(objId) < 5:
