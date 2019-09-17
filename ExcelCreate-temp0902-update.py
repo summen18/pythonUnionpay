@@ -182,6 +182,10 @@ def writeExcelRule(p1Dict):
         elif 'FS_' in id and '_R' in id:
             pass
 # -----------20190902update--------------------------------
+# -----------20190917update--------------------------------
+        elif 'UPACPTRANS_orderN_' in id or 'UPACPNOTIFY_notice_' in id:
+            pass
+# -----------20190917update--------------------------------
         else:
             continue
         pattern = re.compile('(.*?)_')
@@ -305,10 +309,12 @@ def writeExcelAnalyse(col_content, col_event):
 # ----------------------------------update 20190829 新增客结机构130----------------------------------
     FS_Institution_warning = FS_Institution_Event = FS_Institution_object = 0
     FS_Institution_list = []
-
 # ----------------------------------update 20190829----------------------------------
+# ----------------------------------update 20190917----------------------------------
+    UPACP_Center_warning = UPACP_Center_Event = UPACP_Center_object = 0
+    UPACP_Center_list = []
+# ----------------------------------update 20190917----------------------------------
 
-    #test github 11
     idPattern = re.compile(r'(\()(.*?)(\))')
     bracket = re.compile('(\()')
     index = 1
@@ -560,6 +566,14 @@ def writeExcelAnalyse(col_content, col_event):
                 FS_Institution_Event += 1
             FS_Institution_list.append(objId)
         # ----------------------------------update 20190829 新增客结机构130----------------------------------
+        # ----------------------------------update 20190917 新增UPACP交易中心----------------------------------
+        elif 'UPACPTRANS_orderN_' in objId or 'UPACPNOTIFY_notice_' in objId:
+            UPACP_Center_warning+=1
+            if col_event[index] == '已开单':
+                UPACP_Center_Event += 1
+            UPACP_Center_list.append(objId)
+
+        # ----------------------------------update 20190917 新增UPACP交易中心----------------------------------
 
         index += 1
 
@@ -649,6 +663,9 @@ def writeExcelAnalyse(col_content, col_event):
     # ----------------------------------update 20190902----------------------------------
     FS_Institution_object = len(set(FS_Institution_list))
     # ----------------------------------update 20190902----------------------------------
+    # ----------------------------------update 20190917----------------------------------
+    UPACP_Center_object = len(set(UPACP_Center_list))
+    # ----------------------------------update 20190917----------------------------------
 
     # 写入excel特定位置
     fileModstr = str(input('输入模板excel名：'))
@@ -824,6 +841,12 @@ def writeExcelAnalyse(col_content, col_event):
     ws.cell(30, 7).value = FS_Institution_warning
     ws.cell(30, 9).value = FS_Institution_Event
     ws.cell(30, 10).value = FS_Institution_object
+
+    # ----------------------------------update 20190917----------------------------------
+    ws.cell(3, 7).value = UPACP_Center_warning
+    ws.cell(3, 9).value = UPACP_Center_Event
+    ws.cell(3, 10).value = UPACP_Center_object
+
     #-----------------------------------写入sheet2----------------------------------------
     ws1 = wb.worksheets[1]
     row = 2
@@ -1125,6 +1148,15 @@ def writeExcelAnalyse(col_content, col_event):
         ws1.cell(row,5).value= str(FS_Institution_list.count(i))
         row += 1
     # ----------------------------------update 20190902----------------------------------
+    # ----------------------------------update 20190917----------------------------------
+    for i in set(UPACP_Center_list):
+        ws1.cell(row,1).value= '全渠道'
+        ws1.cell(row,2).value= 'UPACP'
+        ws1.cell(row,3).value= '交易中心监控'
+        ws1.cell(row,4).value= i
+        ws1.cell(row,5).value= str(UPACP_Center_list.count(i))
+        row += 1
+    # ----------------------------------update 20190917----------------------------------
 
     fileName = "告警分析" + nowTime + '.xlsx'
     wb.save(fileName)
