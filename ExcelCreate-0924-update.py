@@ -84,7 +84,7 @@ def writeExcelRule(p1Dict):
 
         if id in ['UPACPNOTIFY_UPACPNOTIFY_NA', 'UPACP_UPACP_NA', 'UPACPTRANS_UPACPTRANS_NA','UPACPJF_UPACPJF_NA','UPACPNETBANK_UPACPNETBANK_NA']:
             pass
-        elif 'UPACP' in id and 'Trans' in id:
+        elif 'UPACP' in id and 'TransTP' in id:
             pass
         elif 'UPACP' in id and 'PS' in id:
             pass
@@ -128,7 +128,7 @@ def writeExcelRule(p1Dict):
             pass
         elif id == 'QTT_QTTB_B':
             pass
-        elif 'QTT_CENTER_S' in id:
+        elif 'QTT_CENTER_' in id:
             pass
         elif id in ['QTT_JSAPI_B', 'QTT_MICROPAY_B', 'QTT_NATIVE_B', 'QTT_APP_B']:
             pass
@@ -144,7 +144,7 @@ def writeExcelRule(p1Dict):
             pass
         elif id == 'QAT_QAT_NA':
             pass
-        elif id == 'QAT_CENTER_SH':
+        elif 'QAT_CENTER_' in id:
             pass
         elif id in ['QAT_pay_B', 'QAT_create_B', 'QAT_precreate_B']:
             pass
@@ -167,7 +167,7 @@ def writeExcelRule(p1Dict):
             pass
         elif 'UPACP_' in id and '_A' in id:
             pass
-        # ---------------------------upadate 20190829-----------------
+# -------------20190829update-----------------------------
 # -----------20190902update--------------------------------
         elif 'FS_T_' in id and '_A' in id:
             continue
@@ -183,7 +183,18 @@ def writeExcelRule(p1Dict):
             pass
 # -----------20190902update--------------------------------
 # -----------20190924update--------------------------------
-        
+        #   UPACP MAGPIE错误码监控
+        elif 'MAGPIE_upacMagpie_ERROR_CD_' in id:
+            pass
+        #   QRC收单机构监控
+        elif 'QRC_' in id and '_xz_A' in id:
+            pass
+        #   QRC MAGPIE错误码监控
+        elif 'MAGPIE_qrcMagpie_system_ERROR_CD_' in id:
+            pass
+        #   FS客结收单机构更新补充
+        elif 'FS_' in id and '_XZ_A' in id:
+            pass
 # -----------20190924update--------------------------------
         # -----------20190829update--------------------------------
         elif 'UPACPNOTIFY_notice_SH' in id or 'UPACPTRANS_orderN_SH' in id:
@@ -318,6 +329,19 @@ def writeExcelAnalyse(col_content, col_event):
     UPACP_Center_warning = UPACP_Center_Event = UPACP_Center_object = 0
     UPACP_Center_list = []
 # ----------------------------------update 20190917----------------------------------
+#  ---------------------------------20190924update--------------------------------
+    #   UPACP MAGPIE错误码监控
+    MAGPIE_UpacpError_warning = MAGPIE_UpacpError_Event = MAGPIE_UpacpError_object = 0
+    MAGPIE_UpacpError_list = []
+    #   QRC收单机构监控
+    QRC_Institution_warning = QRC_Institution_Event = QRC_Institution_object = 0
+    QRC_Institution_list = []
+    #   QRC MAGPIE错误码监控
+    MAGPIE_QrcError_warning = MAGPIE_QrcError_Event = MAGPIE_QrcError_object = 0
+    MAGPIE_QrcError_list = []
+    #   QTT 交易中心监控
+    QTT_Center_Event
+#  ---------------------------------20190924update--------------------------------
 
     idPattern = re.compile(r'(\()(.*?)(\))')
     bracket = re.compile('(\()')
@@ -334,7 +358,7 @@ def writeExcelAnalyse(col_content, col_event):
         except:
             print("illegal data format.")
             continue
-        if objId in ['UPACPNOTIFY_UPACPNOTIFY_NA', 'UPACP_UPACP_NA', 'UPACPTRANS_UPACPTRANS_NA']:
+        if objId in ['UPACPNOTIFY_UPACPNOTIFY_NA', 'UPACP_UPACP_NA', 'UPACPTRANS_UPACPTRANS_NA','UPACPJF_UPACPJF_NA','UPACPNETBANK_UPACPNETBANK_NA']:
             UPACP_All_Warning += 1
             if col_event[index] == '已开单':
                 UPACP_All_Event += 1
@@ -449,7 +473,7 @@ def writeExcelAnalyse(col_content, col_event):
             if col_event[index] == '已开单':
                 QTT_QTTB_Event += 1
             QTT_QTTB_object_list.append(objId)
-        elif 'QTT_CENTER_S' in objId:
+        elif 'QTT_CENTER_' in objId:
             QTT_Center_waring += 1
             if col_event[index] == '已开单':
                 QTT_Center_Event += 1
@@ -489,7 +513,7 @@ def writeExcelAnalyse(col_content, col_event):
             if col_event[index] == '已开单':
                 QAT_QAT_Event += 1
             QAT_QAT_object_list.append(objId)
-        elif objId == 'QAT_CENTER_SH':
+        elif 'QAT_CENTER_' in objId:
             QAT_Center_waring += 1
             if col_event[index] == '已开单':
                 QAT_Center_Event += 1
@@ -569,6 +593,11 @@ def writeExcelAnalyse(col_content, col_event):
             if col_event[index] == '已开单':
                 FS_Institution_Event += 1
             FS_Institution_list.append(objId)
+        elif 'FS_' in objId and '_XZ_A' in objId:
+            FS_Institution_warning += 1
+            if col_event[index] == '已开单':
+                FS_Institution_Event += 1
+            FS_Institution_list.append(objId)
         # ----------------------------------update 20190829 新增客结机构130----------------------------------
         # ----------------------------------update 20190917 新增UPACP交易中心----------------------------------
         elif 'UPACPTRANS_orderN_' in objId or 'UPACPNOTIFY_notice_' in objId:
@@ -576,9 +605,27 @@ def writeExcelAnalyse(col_content, col_event):
             if col_event[index] == '已开单':
                 UPACP_Center_Event += 1
             UPACP_Center_list.append(objId)
-
         # ----------------------------------update 20190917 新增UPACP交易中心----------------------------------
-
+        #-----------------------------------update 20190924-----------------------------
+        #   UPACP MAGPIE错误码监控
+        elif 'MAGPIE_upacMagpie_ERROR_CD_' in objId:
+            MAGPIE_UpacpError_warning += 1
+            if col_event[index] == '已开单':
+                MAGPIE_UpacpError_Event += 1
+            MAGPIE_UpacpError_list.append(objId)
+        #   QRC收单机构监控
+        elif 'QRC_' in objId and '_xz_A' in objId:
+            QRC_Institution_warning += 1
+            if col_event[index] == '已开单':
+                QRC_Institution_Event += 1
+            QRC_Institution_list.append(objId)
+        #   QRC MAGPIE错误码监控
+        elif 'MAGPIE_qrcMagpie_system_ERROR_CD_' in objId:
+            MAGPIE_QrcError_warning += 1
+            if col_event[index] == '已开单':
+                MAGPIE_QrcError_Event += 1
+            MAGPIE_QrcError_list.append(objId)
+        #-----------------------------------update 20190924-----------------------------
         index += 1
 
     UPACP_All_object = len(set(UPACP_All_object_list))
@@ -670,6 +717,14 @@ def writeExcelAnalyse(col_content, col_event):
     # ----------------------------------update 20190917----------------------------------
     UPACP_Center_object = len(set(UPACP_Center_list))
     # ----------------------------------update 20190917----------------------------------
+    # ----------------------------------update 20190924-----------------------------
+    #   UPACP MAGPIE错误码监控
+    MAGPIE_UpacpError_object = len(set(MAGPIE_UpacpError_list))
+    #   QRC 收单机构监控
+    QRC_Institution_object = len(set(QRC_Institution_list))
+    #   QRC MAGPIE错误码监控
+    MAGPIE_QrcError_object = len(set(MAGPIE_QrcError_list))
+    # ----------------------------------update 20190924-----------------------------
 
     # 写入excel特定位置
     fileModstr = str(input('输入模板excel名：'))
@@ -678,179 +733,193 @@ def writeExcelAnalyse(col_content, col_event):
     wb = load_workbook(fileMod)
     ws = wb.worksheets[0]
 
-    ws.cell(1,7).value = str(nowTime)+'告警数'
+    ws.cell(1,8).value = str(nowTime)+'告警数'
     # ws.write(0,6,str(nowTime)+'告警数')
 
-    ws.cell(2, 7).value= UPACP_All_Warning
-    ws.cell(2, 9).value= UPACP_All_Event
-    ws.cell(2, 10).value= UPACP_All_object
+    ws.cell(2, 8).value= UPACP_All_Warning
+    ws.cell(2, 10).value= UPACP_All_Event
+    ws.cell(2, 11).value= UPACP_All_object
 
-    ws.cell(4, 7).value=  UPACP_Type_Warning
-    ws.cell(4, 9).value=  UPACP_Type_Event
-    ws.cell(4, 10).value= UPACP_Type_object
+    ws.cell(4, 8).value=  UPACP_Type_Warning
+    ws.cell(4, 10).value=  UPACP_Type_Event
+    ws.cell(4, 11).value= UPACP_Type_object
 
-    ws.cell(5, 7).value= UPACP_procsys_Warning
-    ws.cell(5, 9).value= UPACP_procsys_Event
-    ws.cell(5, 10).value=UPACP_procsys_object
+    ws.cell(5, 8).value= UPACP_procsys_Warning
+    ws.cell(5, 10).value= UPACP_procsys_Event
+    ws.cell(5, 11).value=UPACP_procsys_object
 
-    ws.cell(6, 7).value=  UPACP_client_id_Warning
-    ws.cell(6, 9).value=  UPACP_client_id_Event
-    ws.cell(6, 10).value= UPACP_client_id_object
+    ws.cell(6, 8).value=  UPACP_client_id_Warning
+    ws.cell(6, 10).value=  UPACP_client_id_Event
+    ws.cell(6, 11).value= UPACP_client_id_object
 
-    ws.cell(7, 7).value=  UPACP_Merchant_Warning
-    ws.cell(7, 9).value=  UPACP_Merchant_Event
-    ws.cell(7, 10).value= UPACP_Merchant_object
+    ws.cell(7, 8).value=  UPACP_Merchant_Warning
+    ws.cell(7, 10).value=  UPACP_Merchant_Event
+    ws.cell(7, 11).value= UPACP_Merchant_object
 
-    ws.cell(9, 7).value= HTTP_UPACP_Warning
-    ws.cell(9, 9).value= HTTP_UPACP_Event
-    ws.cell(9, 10).value=HTTP_UPACP_object
+    ws.cell(9, 8).value= HTTP_UPACP_Warning
+    ws.cell(9, 10).value= HTTP_UPACP_Event
+    ws.cell(9, 11).value=HTTP_UPACP_object
 
-    ws.cell(11, 7).value= HTTP_UPACP_qzhlw_Warning
-    ws.cell(11, 9).value= HTTP_UPACP_qzhlw_Event
-    ws.cell(11, 10).value=HTTP_UPACP_qzhlw_object
+    ws.cell(11, 8).value= HTTP_UPACP_qzhlw_Warning
+    ws.cell(11, 10).value= HTTP_UPACP_qzhlw_Event
+    ws.cell(11, 11).value=HTTP_UPACP_qzhlw_object
 
-    ws.cell(14, 7).value= QRC_QRC_Warning
-    ws.cell(14, 9).value= QRC_QRC_Event
-    ws.cell(14, 10).value=QRC_QRC_object
+    ws.cell(15, 8).value= QRC_QRC_Warning
+    ws.cell(15, 10).value= QRC_QRC_Event
+    ws.cell(15, 11).value=QRC_QRC_object
 
-    ws.cell(15, 7).value= QRC_Center_Warning
-    ws.cell(15, 9).value= QRC_Center_Event
-    ws.cell(15, 10).value=QRC_Center_object
+    ws.cell(16, 8).value= QRC_Center_Warning
+    ws.cell(16, 10).value= QRC_Center_Event
+    ws.cell(16, 11).value=QRC_Center_object
 
-    ws.cell(16, 7).value= QRC_Type_Warning
-    ws.cell(16, 9).value= QRC_Type_Event
-    ws.cell(16, 10).value=QRC_Type_object
+    ws.cell(17, 8).value= QRC_Type_Warning
+    ws.cell(17, 10).value= QRC_Type_Event
+    ws.cell(17, 11).value=QRC_Type_object
 
-    ws.cell(17, 7).value= QRC_Order_Warning
-    ws.cell(17, 9).value= QRC_Order_Event
-    ws.cell(17, 10).value=QRC_Order_object
+    ws.cell(18, 8).value= QRC_Order_Warning
+    ws.cell(18, 10).value= QRC_Order_Event
+    ws.cell(18, 11).value=QRC_Order_object
 
-    ws.cell(21, 7).value= HTTP_QRC_All_Warning
-    ws.cell(21, 9).value= HTTP_QRC_All_Event
-    ws.cell(21, 10).value=HTTP_QRC_All_object
+    ws.cell(22, 8).value= HTTP_QRC_All_Warning
+    ws.cell(22, 10).value= HTTP_QRC_All_Event
+    ws.cell(22, 11).value=HTTP_QRC_All_object
 
-    ws.cell(23, 7).value= HTTP_QRC_zxhlw_Warning
-    ws.cell(23, 9).value= HTTP_QRC_zxhlw_Event
-    ws.cell(23, 10).value=HTTP_QRC_zxhlw_object
+    ws.cell(24, 8).value= HTTP_QRC_zxhlw_Warning
+    ws.cell(24, 10).value= HTTP_QRC_zxhlw_Event
+    ws.cell(24, 11).value=HTTP_QRC_zxhlw_object
 
-    ws.cell(25, 7).value= HTTP_QRC_error_Warning
-    ws.cell(25, 9).value= HTTP_QRC_error_Event
-    ws.cell(25, 10).value=HTTP_QRC_error_object
+    ws.cell(26, 8).value= HTTP_QRC_error_Warning
+    ws.cell(26, 10).value= HTTP_QRC_error_Event
+    ws.cell(26, 11).value=HTTP_QRC_error_object
 
-    ws.cell(26, 7).value= FS_FS_waring
-    ws.cell(26, 9).value= FS_FS_Event
-    ws.cell(26, 10).value=FS_FS_object
+    ws.cell(28, 8).value= FS_FS_waring
+    ws.cell(28, 10).value= FS_FS_Event
+    ws.cell(28, 11).value=FS_FS_object
 
-    ws.cell(27, 7).value= FS_Center_waring
-    ws.cell(27, 9).value= FS_Center_Event
-    ws.cell(27, 10).value=FS_Center_object
+    ws.cell(29, 8).value= FS_Center_waring
+    ws.cell(29, 10).value= FS_Center_Event
+    ws.cell(29, 11).value=FS_Center_object
 
-    ws.cell(28, 7).value= FS_Type_waring
-    ws.cell(28, 9).value= FS_Type_Event
-    ws.cell(28, 10).value=FS_Type_object
+    ws.cell(30, 8).value= FS_Type_waring
+    ws.cell(30, 10).value= FS_Type_Event
+    ws.cell(30, 11).value=FS_Type_object
 
-    ws.cell(29, 7).value= FS_procSys_waring
-    ws.cell(29, 9).value= FS_procSys_Event
-    ws.cell(29, 10).value=FS_procSys_object
+    ws.cell(31, 8).value= FS_procSys_waring
+    ws.cell(31, 10).value= FS_procSys_Event
+    ws.cell(31, 11).value=FS_procSys_object
 
-    ws.cell(31, 7).value= HTTP_fsasAll_waring
-    ws.cell(31, 9).value= HTTP_fsasAll_Event
-    ws.cell(31, 10).value=HTTP_fsasAll_object
+    ws.cell(33, 8).value= HTTP_fsasAll_waring
+    ws.cell(33, 10).value= HTTP_fsasAll_Event
+    ws.cell(33, 11).value=HTTP_fsasAll_object
 
-    ws.cell(33, 7).value= HTTP_FS_qzhlw_waring
-    ws.cell(33, 9).value= HTTP_FS_qzhlw_Event
-    ws.cell(33, 10).value=HTTP_FS_qzhlw_object
+    ws.cell(35, 8).value= HTTP_FS_qzhlw_waring
+    ws.cell(35, 10).value= HTTP_FS_qzhlw_Event
+    ws.cell(35, 11).value=HTTP_FS_qzhlw_object
 
-    ws.cell(35, 7).value= HTTP_FS_error_waring
-    ws.cell(35, 9).value= HTTP_FS_error_Event
-    ws.cell(35, 10).value=HTTP_FS_error_object
+    ws.cell(37, 8).value= HTTP_FS_error_waring
+    ws.cell(37, 10).value= HTTP_FS_error_Event
+    ws.cell(37, 11).value=HTTP_FS_error_object
 
-    ws.cell(36, 7).value= QTT_QTTB_waring
-    ws.cell(36, 9).value= QTT_QTTB_Event
-    ws.cell(36, 10).value=QTT_QTTB_object
+    ws.cell(38, 8).value= QTT_QTTB_waring
+    ws.cell(38, 10).value= QTT_QTTB_Event
+    ws.cell(38, 11).value=QTT_QTTB_object
 
-    ws.cell(37, 7).value= QTT_Center_waring
-    ws.cell(37, 9).value= QTT_Center_Event
-    ws.cell(37, 10).value=QTT_Center_object
+    ws.cell(39, 8).value= QTT_Center_waring
+    ws.cell(39, 10).value= QTT_Center_Event
+    ws.cell(39, 11).value=QTT_Center_object
 
-    ws.cell(38, 7).value= QTT_Type_waring
-    ws.cell(38, 9).value= QTT_Type_Event
-    ws.cell(38,10).value= QTT_Type_object
+    ws.cell(40, 8).value= QTT_Type_waring
+    ws.cell(40, 10).value= QTT_Type_Event
+    ws.cell(40,11).value= QTT_Type_object
 
-    ws.cell(40, 7).value= HTTP_QTTall_waring
-    ws.cell(40, 9).value= HTTP_QTTall_Event
-    ws.cell(40, 10).value=HTTP_QTTall_object
+    ws.cell(42, 8).value= HTTP_QTTall_waring
+    ws.cell(42, 10).value= HTTP_QTTall_Event
+    ws.cell(42, 11).value=HTTP_QTTall_object
 
-    ws.cell(41, 7).value= HTTP_QTTdomain_waring
-    ws.cell(41, 9).value= HTTP_QTTdomain_Event
-    ws.cell(41, 10).value=HTTP_QTTdomain_object
+    ws.cell(43, 8).value= HTTP_QTTdomain_waring
+    ws.cell(43, 10).value= HTTP_QTTdomain_Event
+    ws.cell(43, 11).value=HTTP_QTTdomain_object
 
-    ws.cell(42, 7).value= HTTP_QTThlwqz_waring
-    ws.cell(42, 9).value= HTTP_QTThlwqz_Event
-    ws.cell(42, 10).value=HTTP_QTThlwqz_object
+    ws.cell(44, 8).value= HTTP_QTThlwqz_waring
+    ws.cell(44, 10).value= HTTP_QTThlwqz_Event
+    ws.cell(44, 11).value=HTTP_QTThlwqz_object
 
-    ws.cell(43, 7).value= HTTP_QTThlw_qz_waring
-    ws.cell(43, 9).value= HTTP_QTThlw_qz_Event
-    ws.cell(43, 10).value=HTTP_QTThlw_qz_object
+    ws.cell(45, 8).value= HTTP_QTThlw_qz_waring
+    ws.cell(45, 10).value= HTTP_QTThlw_qz_Event
+    ws.cell(45, 11).value=HTTP_QTThlw_qz_object
 
-    ws.cell(44, 7).value= HTTP_QTT_error_waring
-    ws.cell(44, 9).value= HTTP_QTT_error_Event
-    ws.cell(44, 10).value=HTTP_QTT_error_object
+    ws.cell(46, 8).value= HTTP_QTT_error_waring
+    ws.cell(46, 10).value= HTTP_QTT_error_Event
+    ws.cell(46, 11).value=HTTP_QTT_error_object
 
-    ws.cell(45, 7).value= QAT_QAT_waring
-    ws.cell(45, 9).value= QAT_QAT_Event
-    ws.cell(45, 10).value=QAT_QAT_object
+    ws.cell(47, 8).value= QAT_QAT_waring
+    ws.cell(47, 10).value= QAT_QAT_Event
+    ws.cell(47, 11).value=QAT_QAT_object
 
-    ws.cell(46, 7).value= QAT_Center_waring
-    ws.cell(46, 9).value= QAT_Center_Event
-    ws.cell(46, 10).value=QAT_Center_object
+    ws.cell(48, 8).value= QAT_Center_waring
+    ws.cell(48, 10).value= QAT_Center_Event
+    ws.cell(48, 11).value=QAT_Center_object
 
-    ws.cell(47, 7).value= QAT_Type_waring
-    ws.cell(47, 9).value= QAT_Type_Event
-    ws.cell(47, 10).value=QAT_Type_object
+    ws.cell(49, 8).value= QAT_Type_waring
+    ws.cell(49, 10).value= QAT_Type_Event
+    ws.cell(49, 11).value=QAT_Type_object
 
-    ws.cell(49,7).value= HTTP_QATall_waring
-    ws.cell(49, 9).value= HTTP_QATall_Event
-    ws.cell(49, 10).value=HTTP_QATall_object
+    ws.cell(51,8).value= HTTP_QATall_waring
+    ws.cell(51,10).value= HTTP_QATall_Event
+    ws.cell(51,11).value=HTTP_QATall_object
 
-    ws.cell(51, 7).value= HTTP_QATdomain_waring
-    ws.cell(51, 9).value= HTTP_QATdomain_Event
-    ws.cell(51, 10).value=HTTP_QATdomain_object
+    ws.cell(53, 8).value= HTTP_QATdomain_waring
+    ws.cell(53, 10).value= HTTP_QATdomain_Event
+    ws.cell(53, 11).value=HTTP_QATdomain_object
 
-    ws.cell(52, 7).value= HTTP_QATAPI_waring
-    ws.cell(52, 9).value= HTTP_QATAPI_Event
-    ws.cell(52, 10).value=HTTP_QATAPI_object
+    ws.cell(54, 8).value= HTTP_QATAPI_waring
+    ws.cell(54, 10).value= HTTP_QATAPI_Event
+    ws.cell(54, 11).value=HTTP_QATAPI_object
 
-    ws.cell(53, 7).value= HTTP_QAT_error_waring
-    ws.cell(53, 9).value= HTTP_QAT_error_Event
-    ws.cell(53, 10).value=HTTP_QAT_error_object
+    ws.cell(55, 8).value= HTTP_QAT_error_waring
+    ws.cell(55, 10).value= HTTP_QAT_error_Event
+    ws.cell(55, 11).value=HTTP_QAT_error_object
     # ----------------------------------update 20190829----------------------------------
-    ws.cell(8, 7).value = UPACP_Institution_warning
-    ws.cell(8, 9).value = UPACP_Institution_Event
-    ws.cell(8, 10).value = UPACP_Institution_object
+    ws.cell(8, 8).value = UPACP_Institution_warning
+    ws.cell(8, 10).value = UPACP_Institution_Event
+    ws.cell(8, 11).value = UPACP_Institution_object
 
-    ws.cell(19, 7).value = QRC_APP_warning
-    ws.cell(19, 9).value = QRC_APP_Event
-    ws.cell(19, 10).value = QRC_APP_object
+    ws.cell(20, 8).value = QRC_APP_warning
+    ws.cell(20, 10).value = QRC_APP_Event
+    ws.cell(20, 11).value = QRC_APP_object
 
-    ws.cell(39, 7).value = QTT_Institution_warning
-    ws.cell(39, 9).value = QTT_Institution_Event
-    ws.cell(39, 10).value = QTT_Institution_object
+    ws.cell(41, 8).value = QTT_Institution_warning
+    ws.cell(41, 10).value = QTT_Institution_Event
+    ws.cell(41, 11).value = QTT_Institution_object
 
-    ws.cell(48, 7).value = QAT_Institution_warning
-    ws.cell(48, 9).value = QAT_Institution_Event
-    ws.cell(48, 10).value = QAT_Institution_object
+    ws.cell(50, 8).value = QAT_Institution_warning
+    ws.cell(50, 10).value = QAT_Institution_Event
+    ws.cell(50, 11).value = QAT_Institution_object
 
     # ----------------------------------update 20190902----------------------------------
-    ws.cell(30, 7).value = FS_Institution_warning
-    ws.cell(30, 9).value = FS_Institution_Event
-    ws.cell(30, 10).value = FS_Institution_object
+    ws.cell(32, 8).value = FS_Institution_warning
+    ws.cell(32, 10).value = FS_Institution_Event
+    ws.cell(32, 11).value = FS_Institution_object
 
     # ----------------------------------update 20190917----------------------------------
     ws.cell(3, 7).value = UPACP_Center_warning
-    ws.cell(3, 9).value = UPACP_Center_Event
-    ws.cell(3, 10).value = UPACP_Center_object
+    ws.cell(3, 10).value = UPACP_Center_Event
+    ws.cell(3, 11).value = UPACP_Center_object
 
+    # ----------------------------------update 20190924-----------------------------
+    #   UPACP MAGPIE错误码监控
+    ws.cell(14,8).value = MAGPIE_UpacpError_warning
+    ws.cell(14,10).value = MAGPIE_UpacpError_Event
+    ws.cell(14,11).value = MAGPIE_UpacpError_object
+    #   QRC 机构监控
+    ws.cell(21, 8).value = QRC_Institution_warning
+    ws.cell(21, 10).value = QRC_Institution_Event
+    ws.cell(21, 11).value = QRC_Institution_object
+    #   QRC MAGPIE错误码监控
+    ws.cell(27, 8).value = MAGPIE_QrcError_warning
+    ws.cell(27, 10).value = MAGPIE_QrcError_Event
+    ws.cell(27, 11).value = MAGPIE_QrcError_object
+    # ----------------------------------update 20190924-----------------------------
     #-----------------------------------写入sheet2----------------------------------------
     ws1 = wb.worksheets[1]
     row = 2
@@ -1161,7 +1230,31 @@ def writeExcelAnalyse(col_content, col_event):
         ws1.cell(row,5).value= str(UPACP_Center_list.count(i))
         row += 1
     # ----------------------------------update 20190917----------------------------------
+    # ----------------------------------update 20190924-----------------------------
+    for i in set(MAGPIE_UpacpError_list):
+        ws1.cell(row,1).value= '全渠道'
+        ws1.cell(row,2).value= 'MAGPIE'
+        ws1.cell(row,3).value= '错误码监控'
+        ws1.cell(row,4).value= i
+        ws1.cell(row,5).value= str(MAGPIE_UpacpError_list.count(i))
+        row += 1
 
+    for i in set(QRC_Institution_list):
+        ws1.cell(row,1).value= '二维码'
+        ws1.cell(row,2).value= 'QRC'
+        ws1.cell(row,3).value= '收单机构监控'
+        ws1.cell(row,4).value= i
+        ws1.cell(row,5).value= str(QRC_Institution_list.count(i))
+        row += 1
+
+    for i in set(MAGPIE_QrcError_list):
+        ws1.cell(row,1).value= '二维码'
+        ws1.cell(row,2).value= 'MAGPIE'
+        ws1.cell(row,3).value= '错误码监控'
+        ws1.cell(row,4).value= i
+        ws1.cell(row,5).value= str(MAGPIE_QrcError_list.count(i))
+        row += 1
+    # ----------------------------------update 20190924-----------------------------
     fileName = "告警分析" + nowTime + '.xlsx'
     wb.save(fileName)
 
